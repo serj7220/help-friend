@@ -1,0 +1,17 @@
+<ng-container  *ngIf="users && users.length; else loading">
+  <mat-grid-list cols="5" rowHeight="400">
+    <mat-grid-tile *ngFor="let user of users | paginate: { itemsPerPage: 10, currentPage: currentPage }">
+      <app-user-card [user]="user"></app-user-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+  <div class="list-paginator">
+    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+  </div>
+</ng-container>
+
+<ng-template #loading>
+  <div class="loading-spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>
