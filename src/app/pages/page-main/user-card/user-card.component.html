@@ -1,0 +1,10 @@
+<mat-card class="user-card" [routerLink]="['user-details', user?.login]">
+  <mat-card-header>
+    <mat-card-title>Login: {{user?.login}}</mat-card-title>
+  </mat-card-header>
+  <img
+    mat-card-image
+    [src]="user?.avatar_url"
+    [alt]="user?.login"
+   >
+</mat-card>
