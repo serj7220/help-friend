@@ -2,11 +2,13 @@ import { zip } from 'rxjs';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import { UserService } from '../../shared/services/user.service';
 import { User, UserRepos } from '../../core/interfaces/core.interfaces';
 
+@UntilDestroy()
 @Component({
   selector: 'app-page-user-details',
   templateUrl: './page-user-details.component.html',
@@ -28,7 +30,9 @@ export class PageUserDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.activatedRoute.paramMap.subscribe(_ => {
+    this.activatedRoute.paramMap
+      .pipe(untilDestroyed(this))
+      .subscribe(_ => {
         this.userId =  _.get('id');
         if (this.userId !== null) {
           this.getData(this.userId);
@@ -44,6 +48,7 @@ export class PageUserDetailsComponent implements OnInit {
 
   private getData(userId: string) {
     zip(this.userService.getUserById(userId), this.userService.getListRepos(userId))
+      .pipe(untilDestroyed(this))
       .subscribe(([userData, reposData]) => {
         this.user = userData;
         reposData.forEach((repo: any) =>
