@@ -1,8 +1,10 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
-import {User} from '../../core/interfaces/core.interfaces';
-import {UserService} from '../../shared/services/user.service';
+import { User } from '../../core/interfaces/core.interfaces';
+import { UserService } from '../../shared/services/user.service';
 
+@UntilDestroy()
 @Component({
   selector: 'app-page-main',
   templateUrl: './page-main.component.html',
@@ -20,6 +22,7 @@ export class PageMainComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService.getListUsers(1, 30)
+      .pipe(untilDestroyed(this))
       .subscribe((data: User[]) => {
         this.users = data;
         this.changeDetectionRef.detectChanges();
